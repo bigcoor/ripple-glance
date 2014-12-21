@@ -1,0 +1,92 @@
+<!doctype html>
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Web Application</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic" rel="stylesheet" type="text/css">
+        <!-- needs images, font... therefore can not be part of ui.css -->
+        <link rel="stylesheet" href="styles/font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="styles/weather-icons/css/weather-icons.min.css">
+        <!-- end needs images -->
+
+        <link rel="stylesheet" href="../styles/ui.css"/>
+        <link rel="stylesheet" href="../styles/main.css">
+
+    </head>
+    <body data-ng-app="app" id="app" data-custom-background="" data-off-canvas-nav="">
+        <!--[if lt IE 9]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <div data-ng-controller="AppCtrl">
+            <div data-ng-hide="isSpecificPage()" data-ng-cloak="">
+                <section data-ng-include=" 'views/header.html' " id="header" class="top-header"></section>
+
+                <aside data-ng-include=" 'views/nav.html' " id="nav-container"></aside>
+            </div>
+
+            <div class="view-container">
+                <section data-ng-view="" id="content" class="animate-fade-up"></section>
+            </div>
+        </div>
+
+        <!--&lt;!&ndash; build:js scripts/vendor.js &ndash;&gt;-->
+        <!--<script src="/deps/js/vendor/jquery.min.js"></script>-->
+        <!--<script src="/deps/js/vendor/angular.min.js"></script>-->
+        <!--<script src="/deps/js/vendor/angular-route.min.js"></script>-->
+        <!--<script src="/deps/js/vendor/angular-animate.min.js"></script>-->
+        <!--<script src="/deps/js/vendor/underscore-min.js"></script>-->
+        <!--&lt;!&ndash; endbuild &ndash;&gt;-->
+
+        <!--&lt;!&ndash; build:js scripts/ui.js &ndash;&gt;-->
+        <!--<script src="/deps/js/ui/ui-bootstrap-tpls.min.js"></script>-->
+        <!--<script src="/deps/js/ui/jquery.spinner.min.js"></script>-->
+        <!--<script src="/deps/js/ui/dist/bootstrap-slider.min.js"></script>-->
+        <!--<script src="/deps/js/ui/jquery.steps.min.js"></script>-->
+        <!--<script src="/deps/js/ui/toastr.min.js"></script>-->
+        <!--<script src="/deps/js/ui/bootstrap.file-input.js"></script>-->
+        <!--<script src="/deps/js/ui/jquery.slimscroll.min.js"></script>-->
+        <!--<script src="/deps/js/ui/holder.js"></script>-->
+        <!--<script src="/deps/js/ui/raphael-min.js"></script>-->
+        <!--<script src="/deps/js/ui/morris.js"></script>-->
+        <!--<script src="/deps/js/ui/responsive-tables.js"></script>-->
+        <!--<script src="/deps/js/ui/jquery.sparkline.min.js"></script>-->
+        <!--<script src="/deps/js/ui/jquery.flot.js"></script>-->
+        <!--<script src="/deps/js/ui/jquery.flot.resize.js"></script>-->
+        <!--<script src="/deps/js/ui/jquery.flot.pie.js"></script>-->
+        <!--<script src="/deps/js/ui/jquery.flot.stack.js"></script>-->
+        <!--<script src="/deps/js/ui/jquery.flot.tooltip.min.js"></script>-->
+        <!--<script src="/deps/js/ui/jquery.flot.time.js"></script>-->
+        <!--<script src="/deps/js/ui/gauge.min.js"></script>-->
+        <!--<script src="/deps/js/ui/angular.easypiechart.min.js"></script>-->
+        <!--<script src="/deps/js/ui/angular-wizard.min.js"></script>-->
+        <!--<script src="/deps/js/ui/textAngular-sanitize.min.js"></script>-->
+        <!--<script src="/deps/js/ui/textAngular.min.js"></script>-->
+        <!--<script src="/deps/js/ui/skycons.js"></script>-->
+        <!--&lt;!&ndash; endbuild &ndash;&gt;-->
+
+        <!--&lt;!&ndash; build:js({.tmp,app}) scripts/app.js &ndash;&gt;-->
+        <!--<script src="/deps/js/app/app.js"></script>-->
+        <!--<script src="/deps/js/app/main.js"></script>-->
+        <!--<script src="/deps/js/app/directives.js"></script>-->
+        <!--<script src="/deps/js/app/localize.js"></script>-->
+        <!--<script src="/deps/js/app/UICtrl.js"></script>-->
+        <!--<script src="/deps/js/app/UIDirective.js"></script>-->
+        <!--<script src="/deps/js/app/UIService.js"></script>-->
+        <!--<script src="/deps/js/app/FormDirective.js"></script>-->
+        <!--<script src="/deps/js/app/FormCtrl.js"></script>-->
+        <!--<script src="/deps/js/app/FormValidation.js"></script>-->
+        <!--<script src="/deps/js/app/TableCtrl.js"></script>-->
+        <!--<script src="/deps/js/app/Task.js"></script>-->
+        <!--<script src="/deps/js/app/ChartCtrl.js"></script>-->
+        <!--<script src="/deps/js/app/ChartDirective.js"></script>-->
+
+        <script src="js/vendor.js"></script>
+        <script src="js/ui.js"></script>
+        <script src="js/app.js"></script>
+    </body>
+</html>

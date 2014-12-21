@@ -1,0 +1,48 @@
+{
+  "name": "lookmook-admin",
+  "version": "0.0.1",
+  "devDependencies": {
+    "bcrypt": "^0.8.0",
+    "express": "^4.8.3",
+    "nconf": "^0.6.9",
+    "underscore": "^1.6.0",
+    "body-parser": "^1.6.3",
+    "morgan": "^1.2.2",
+    "cookie-parser": "^1.3.2",
+    "method-override": "^2.1.3",
+    "cookie-session": "^1.0.2",
+    "stylus": "^0.47.3",
+    "serve-static": "^1.5.1",
+    "jade": "^1.5.0",
+    "istanbul": "^0.3.0",
+    "supertest": "^0.13.0",
+    "async": "^0.9.0",
+    "console": "^0.5.2",
+    "grunt": "^0.4.5",
+    "grunt-contrib-uglify": "^0.6.0",
+    "grunt-contrib-concat": "^0.5.0",
+    "grunt-contrib-coffee": "^0.12.0",
+    "grunt-contrib-copy": "^0.7.0",
+    "grunt-preprocess": "^4.0.0",
+    "grunt-bower-task": "^0.4.0",
+    "grunt-shell": "^1.1.1"
+  },
+  "engines": {
+    "node": "0.10.x"
+  },
+  "dependencies": {
+    "webpack-dev-server": "^1.6.6",
+    "grunt-webpack": "^1.0.8",
+    "clone": "^0.2.0",
+    "tapable": "^0.1.8",
+    "esprima": "^1.2.2",
+    "webpack": "^1.4.13",
+    "jshint": "^2.5.11",
+    "jshint-loader": "^0.8.0",
+    "coffee-script": "^1.8.0",
+    "coffee-loader": "^0.7.2",
+    "jade": "^1.8.2",
+    "jade-loader": "^0.7.0",
+    "grunt-contrib-jade": "^0.13.0"
+  }
+}
