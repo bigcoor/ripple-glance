@@ -1,0 +1,5 @@
+{
+  "API": "http://mogo.lookmook.cn:16384",
+  "MONGO": "mongodb://localhost:27017/ripple_glance",
+  "PORT": 3000
+}

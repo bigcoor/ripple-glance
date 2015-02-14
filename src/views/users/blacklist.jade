@@ -1,0 +1,49 @@
+.page(data-ng-controller='BlacklistCtrl')
+  .row
+    .col-sm-3
+      section.panel.panel-default.mail-categories
+        .panel-heading
+          a.btn.btn-block.btn-lg.btn-primary(href='#/users/wanted') Wanted List
+        ul.list-group
+          //TODO 提示
+          each val in Array(8)
+            li.list-group-item
+              a(href='javascript:;')
+                i.fa.fa-user
+                | Meepo
+                span.badge.badge-danger.pull-right 6
+                span.badge.badge-info.pull-right.pull-margin-right 6
+
+        pagination.pagination-sm(total-items='bigTotalItems', page='bigCurrentPage', max-size='maxSize', boundary-links='true', rotate='false', num-pages='numPages')
+          .callout.callout-info
+            p Page&colon; &lcub;&lcub;bigCurrentPage&rcub;&rcub; &sol; &lcub;&lcub;numPages&rcub;&rcub;
+    .col-sm-9
+      section.panel.panel-default.mail-container
+        .panel-heading
+          strong
+            span.glyphicon.glyphicon-th
+            | Blacklist Comments
+        .mail-options
+          label.ui-checkbox
+            input(type='checkbox', name='checkbox1', value='option1')
+            span Toggle All
+        table.table.table-hover(ng-repeat= 'comment in userTimeLine')
+          tr.mail-unread
+            td
+              label.ui-checkbox
+                input(type='checkbox', name='checkbox1', value='option1')
+                span
+            td(style="width: 10em")
+              | {{comment.uid}}
+              i.fa.fa-circle.color-info
+            td(style="width: 70em")
+              | {{comment.desc}}
+              i.fa.fa-paperclip
+            td(style="width: 10em")
+              | {{comment.timestamp}}
+            td
+              button.fa.fa-remove.active(ng-click="deleteComment(comment)")
+
+        pagination.pagination-sm(total-items='totalItems', page='currentPage', max-size='maxSize', boundary-links='true', rotate='false', ng-model="currentPage", on-select-page="setPage(page)", items-per-page='itemsPerPage')
+          .callout.callout-info
+            p Page&colon; &lcub;&lcub;bigCurrentPage&rcub;&rcub; &sol; &lcub;&lcub;numPages&rcub;&rcub;

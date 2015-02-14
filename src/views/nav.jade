@@ -1,0 +1,177 @@
+html
+  body
+    #nav-wrapper
+      ul#nav(data-ng-controller='NavCtrl', data-collapse-nav='', data-slim-scroll='', data-highlight-active='')
+        li
+          a(href='#/dashboard')
+            i.fa.fa-dashboard
+              span.icon-bg.bg-danger
+            span(data-i18n='Dashboard')
+        li
+          a(href='#/user')
+            i.fa.fa-users
+              span.icon-bg.bg-orange
+            span(data-i18n='User')
+          ul
+            li
+              a(href='#/users/blacklist')
+                i.fa.fa-caret-right
+                span(data-i18n='Users')
+        li
+          a(href='#/ui')
+            i.fa.fa-magic
+              span.icon-bg.bg-orange
+            span(data-i18n='UI Kit')
+          ul
+            li
+              a(href='#/ui/buttons')
+                i.fa.fa-caret-right
+                span(data-i18n='Buttons')
+            li
+              a(href='#/ui/typography')
+                i.fa.fa-caret-right
+                span(data-i18n='Typography')
+            li
+              a(href='#/ui/widgets')
+                i.fa.fa-caret-right
+                span(data-i18n='Widgets')
+                span.badge.badge-success 12
+            li
+              a(href='#/ui/grids')
+                i.fa.fa-caret-right
+                span(data-i18n='Grids')
+            li
+              a(href='#/ui/icons')
+                i.fa.fa-caret-right
+                span(data-i18n='Icons')
+            li
+              a(href='#/ui/components')
+                i.fa.fa-caret-right
+                span(data-i18n='Components')
+                span.badge.badge-info 14
+            li
+              a(href='#/ui/timeline')
+                i.fa.fa-caret-right
+                span(data-i18n='Timeline')
+        li
+          a(href='#/table')
+            i.fa.fa-table
+              span.icon-bg.bg-warning
+            span(data-i18n='Tables')
+          ul
+            li
+              a(href='#/tables/static')
+                i.fa.fa-caret-right
+                span(data-i18n='Static Tables')
+            li
+              a(href='#/tables/responsive')
+                i.fa.fa-caret-right
+                span(data-i18n='Responsive Tables')
+            li
+              a(href='#/tables/dynamic')
+                i.fa.fa-caret-right
+                span(data-i18n='Dynamic Tables')
+        li
+          a(href='#/form')
+            i.fa.fa-pencil
+              span.icon-bg.bg-success
+            span(data-i18n='Forms')
+          ul.sub-nav
+            li
+              a(href='#/forms/elements')
+                i.fa.fa-caret-right
+                span(data-i18n='Form Elements')
+                span.badge.badge-warning 13
+            li
+              a(href='#/forms/validation')
+                i.fa.fa-caret-right
+                span(data-i18n='Form Validation')
+            li
+              a(href='#/forms/wizard')
+                i.fa.fa-caret-right
+                span(data-i18n='Form Wizard')
+            li
+              a(href='#/forms/layouts')
+                i.fa.fa-caret-right
+                span(data-i18n='Form Layouts')
+        li.nav-task
+          a(href='#/tasks')
+            i.fa.fa-tasks
+              span.icon-bg.bg-info
+            span(data-i18n='Tasks')
+            span.badge.badge-danger.main-badge(data-ng-show='taskRemainingCount > 0') &lcub;&lcub;taskRemainingCount&rcub;&rcub;
+        li
+          a(href='#/charts')
+            i.fa.fa-bar-chart-o
+              span.icon-bg.bg-primary-light
+            span(data-i18n='Charts')
+          ul
+            li
+              a(href='#/charts/morris')
+                i.fa.fa-caret-right
+                | Morris
+                span(data-i18n='Charts')
+            li
+              a(href='#/charts/flot')
+                i.fa.fa-caret-right
+                | Flot
+                span(data-i18n='Charts')
+            li
+              a(href='#/charts/others')
+                i.fa.fa-caret-right
+                | Other
+                span(data-i18n='Charts')
+        li
+          a(href='#/mail')
+            i.fa.fa-envelope-o
+              span.icon-bg.bg-primary
+            span(data-i18n='Mail')
+          ul
+            li
+              a(href='#/mail/inbox')
+                i.fa.fa-caret-right
+                span(data-i18n='Inbox')
+            li
+              a(href='#/mail/compose')
+                i.fa.fa-caret-right
+                span(data-i18n='Compose')
+            li
+              a(href='#/mail/single')
+                i.fa.fa-caret-right
+                span(data-i18n='Single Mail')
+        li
+          a(href='#/pages')
+            i.fa.fa-file-text-o
+              span.icon-bg.bg-violet
+            span(data-i18n='Pages')
+          ul
+            li
+              a(href='#/pages/signin')
+                i.fa.fa-caret-right
+                span(data-i18n='Sign in')
+            li
+              a(href='#/pages/signup')
+                i.fa.fa-caret-right
+                span(data-i18n='Sign Up')
+            li
+              a(href='#/pages/lock-screen')
+                i.fa.fa-caret-right
+                span(data-i18n='Lock Screen')
+            li
+              a(href='#/pages/profile')
+                i.fa.fa-caret-right
+                span(data-i18n='User Profile')
+            li
+              a(href='#/pages/404')
+                i.fa.fa-caret-right
+                | 404
+                span(data-i18n='Error')
+            li
+              a(href='#/pages/500')
+                i.fa.fa-caret-right
+                | 500
+                span(data-i18n='Error')
+            li
+              a(href='#/pages/blank')
+                i.fa.fa-caret-right
+                span(data-i18n='Blank Page')

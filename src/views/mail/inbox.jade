@@ -1,0 +1,300 @@
+.page
+  .row
+    .col-sm-3
+      section.panel.panel-default.mail-categories
+        .panel-heading
+          a.btn.btn-block.btn-lg.btn-primary(href='#/mail/compose') Compose
+        ul.list-group
+          li.list-group-item.active
+            a(href='javascript:;')
+              i.fa.fa-inbox
+              | Inbox
+              span.badge.badge-info.pull-right 6
+          li.list-group-item
+            a(href='javascript:;')
+              i.fa.fa-envelope-o
+              | Send mail
+          li.list-group-item
+            a(href='javascript:;')
+              i.fa.fa-star
+              | Starred
+              span.badge.badge-danger.pull-right 3
+          li.list-group-item
+            a(href='javascript:;')
+              i.fa.fa-comment-o
+              | Chat
+              span.badge.badge-success.pull-right 9
+          li.list-group-item
+            a(href='javascript:;')
+              i.fa.fa-pencil
+              | Draft
+              span.badge.badge-warning.pull-right 1
+          li.list-group-item
+            a(href='javascript:;')
+              i.fa.fa-trash-o
+              | Spam
+      section.panel.panel-default.mail-categories
+        .panel-heading Label
+        ul.list-group
+          li.list-group-item
+            a(href='javascript:;')
+              | Work
+              i.fa.fa-circle.color-danger.pull-right
+          li.list-group-item
+            a(href='javascript:;')
+              | Friends
+              i.fa.fa-circle.color-info.pull-right
+          li.list-group-item
+            a(href='javascript:;')
+              | Family
+              i.fa.fa-circle.color-primary.pull-right
+          li.list-group-item
+            a(href='javascript:;')
+              | Private
+              i.fa.fa-circle.color-warning.pull-right
+          li.list-group-item
+            a(href='javascript:;')
+              | Classmates
+              i.fa.fa-circle.color-success.pull-right
+    .col-sm-9
+      section.panel.panel-default.mail-container
+        .panel-heading
+          strong
+            span.glyphicon.glyphicon-th
+            | Inbox
+        .mail-options
+          label.ui-checkbox
+            input(type='checkbox', name='checkbox1', value='option1')
+            span Toggle All
+        table.table.table-hover
+          tr.mail-unread
+            td
+              label.ui-checkbox
+                input(type='checkbox', name='checkbox1', value='option1')
+                span
+            td
+              | Jane Swift
+              i.fa.fa-circle.color-info
+            td Nice to meet you
+            td
+              i.fa.fa-paperclip
+            td 3&sol;11&sol;14 2&colon;30 PM
+            td
+              i.fa.fa-star
+          tr.mail-unread
+            td
+              label.ui-checkbox
+                input(type='checkbox', name='checkbox1', value='option1')
+                span
+            td Gmail
+            td Please confirm your registeration
+            td
+            td 2&sol;19&sol;14 2&colon;00 PM
+            td
+              i.fa.fa-star
+          tr
+            td
+              label.ui-checkbox
+                input(type='checkbox', name='checkbox1', value='option1')
+                span
+            td
+              | John Smith
+              i.fa.fa-circle.color-danger
+            td Lorem ipsum dolor sit amet
+            td
+            td 2&sol;15&sol;14 5&colon;00 AM
+            td
+              i.fa.fa-star.active
+          tr.mail-hightlight
+            td
+              label.ui-checkbox
+                input(type='checkbox', name='checkbox1', value='option1', checked='')
+                span
+            td no-reply
+            td Consectetur adipisicing elit&period;
+            td
+            td 2&sol;11&sol;14 2&colon;00 PM
+            td
+              i.fa.fa-star.active
+          tr
+            td
+              label.ui-checkbox
+                input(type='checkbox', name='checkbox1', value='option1')
+                span
+            td no-reply
+            td Ea totam libero dignissimos dicta eos
+            td
+            td 2&sol;11&sol;14 2&colon;00 PM
+            td
+              i.fa.fa-star
+          tr
+            td
+              label.ui-checkbox
+                input(type='checkbox', name='checkbox1', value='option1')
+                span
+            td
+              | Alex Swift
+              i.fa.fa-circle.color-success
+            td Dolor ut similique
+            td
+              i.fa.fa-paperclip
+            td 2&sol;11&sol;14 2&colon;00 PM
+            td
+              i.fa.fa-star
+          tr
+            td
+              label.ui-checkbox
+                input(type='checkbox', name='checkbox1', value='option1')
+                span
+            td
+              | Emma Bebier
+              i.fa.fa-circle.color-success
+            td Rerum dolore commodi nobis quaerat
+            td
+            td 2&sol;11&sol;14 2&colon;00 PM
+            td
+              i.fa.fa-star.active
+          tr
+            td
+              label.ui-checkbox
+                input(type='checkbox', name='checkbox1', value='option1')
+                span
+            td Service
+            td abore id dignissimos non minus
+            td
+            td 2&sol;11&sol;14 2&colon;00 PM
+            td
+              i.fa.fa-star
+          tr
+            td
+              label.ui-checkbox
+                input(type='checkbox', name='checkbox1', value='option1')
+                span
+            td Service
+            td Fugit ducimus quidem
+            td
+            td 2&sol;11&sol;14 2&colon;00 PM
+            td
+              i.fa.fa-star
+          tr
+            td
+              label.ui-checkbox
+                input(type='checkbox', name='checkbox1', value='option1')
+                span
+            td Big ant
+            td Laboriosam&comma; minima totam
+            td
+              i.fa.fa-paperclip
+            td 2&sol;11&sol;14 2&colon;00 PM
+            td
+              i.fa.fa-star.active
+          tr
+            td
+              label.ui-checkbox
+                input(type='checkbox', name='checkbox1', value='option1')
+                span
+            td
+              | Tyler Doe
+              i.fa.fa-circle.color-primary
+            td Laborum consequatur quae
+            td
+              i.fa.fa-paperclip
+            td 2&sol;11&sol;14 2&colon;00 PM
+            td
+              i.fa.fa-star.active
+          tr
+            td
+              label.ui-checkbox
+                input(type='checkbox', name='checkbox1', value='option1')
+                span
+            td Small Tomato
+            td Nemo aliquid
+            td
+            td 2&sol;11&sol;14 2&colon;00 PM
+            td
+              i.fa.fa-star
+          tr
+            td
+              label.ui-checkbox
+                input(type='checkbox', name='checkbox1', value='option1')
+                span
+            td Service
+            td Laudantium rerum ab similique aliquam
+            td
+            td 2&sol;11&sol;14 2&colon;00 PM
+            td
+              i.fa.fa-star
+          tr
+            td
+              label.ui-checkbox
+                input(type='checkbox', name='checkbox1', value='option1')
+                span
+            td
+              | Private
+              i.fa.fa-circle.color-warning
+            td Voluptatum reprehenderit
+            td
+              i.fa.fa-paperclip
+            td 2&sol;11&sol;14 2&colon;00 PM
+            td
+              i.fa.fa-star
+          tr
+            td
+              label.ui-checkbox
+                input(type='checkbox', name='checkbox1', value='option1')
+                span
+            td Big ant
+            td Deleniti veniam aperiam
+            td
+            td 2&sol;11&sol;14 2&colon;00 PM
+            td
+              i.fa.fa-star
+          tr
+            td
+              label.ui-checkbox
+                input(type='checkbox', name='checkbox1', value='option1')
+                span
+            td Service
+            td Facere ullam totam&excl;
+            td
+            td 2&sol;11&sol;14 2&colon;00 PM
+            td
+              i.fa.fa-star
+          tr
+            td
+              label.ui-checkbox
+                input(type='checkbox', name='checkbox1', value='option1')
+                span
+            td
+              | Private
+              i.fa.fa-circle.color-warning
+            td Fugit ducimus quidem
+            td
+            td 2&sol;11&sol;14 2&colon;00 PM
+            td
+              i.fa.fa-star.active
+          tr
+            td
+              label.ui-checkbox
+                input(type='checkbox', name='checkbox1', value='option1')
+                span
+            td Small Tomato
+            td Laboriosam&comma; minima totam
+            td
+              i.fa.fa-paperclip
+            td 2&sol;11&sol;14 2&colon;00 PM
+            td
+              i.fa.fa-star
+          tr
+            td
+              label.ui-checkbox
+                input(type='checkbox', name='checkbox1', value='option1')
+                span
+            td
+              | Tyler Doe
+              i.fa.fa-circle.color-primary
+            td Aborum consequatur quae
+            td
+            td 2&sol;11&sol;14 2&colon;00 PM
+            td
+              i.fa.fa-star

@@ -6364,8 +6364,16 @@ button.close {
   float: right !important;
 }
 
+.pull-margin-right {
+  margin-right: 1.2em;
+}
+
 .pull-left {
   float: left !important;
+}
+
+.pull-margin-left {
+  margin-left: 1.2em;
 }
 
 .hide {

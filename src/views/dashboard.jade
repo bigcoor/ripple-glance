@@ -1,0 +1,155 @@
+html
+  body
+    .page.page-dashboard(data-ng-controller='DashboardCtrl')
+      // stats
+      .row
+        .col-lg-3.col-xsm-6
+          .panel.mini-box
+            span.box-icon.bg-success
+              i.fa.fa-rocket
+            .box-info
+              p.size-h2
+                | 25
+                span.size-h4 &percnt;
+              p.text-muted
+                span(data-i18n='Growth')
+        .col-lg-3.col-xsm-6
+          .panel.mini-box
+            span.box-icon.bg-info
+              i.fa.fa-users
+            .box-info
+              p.size-h2 112
+              p.text-muted
+                span(data-i18n='New users')
+        .col-lg-3.col-xsm-6
+          .panel.mini-box
+            span.box-icon.bg-warning
+              i.fa.fa-dollar
+            .box-info
+              p.size-h2 4&comma;550
+              p.text-muted
+                span(data-i18n='Profit')
+        .col-lg-3.col-xsm-6
+          .panel.mini-box
+            span.box-icon.bg-danger
+              i.fa.fa-shopping-cart
+            .box-info
+              p.size-h2 262
+              p.text-muted
+                span(data-i18n='Sales')
+      // end stats
+      .row
+        .col-md-8
+          section.panel.panel-default
+            .panel-heading
+              strong
+                span.glyphicon.glyphicon-th
+                span(data-i18n='Data')
+            .panel-body(data-ng-controller='morrisChartCtrl')
+              div(morris-chart='', data-data='comboData', data-type='bar', data-xkey='year', data-ykeys='["a", "b", "c"]', data-labels='["Value A", "Value B", "Value C"]', data-bar-colors='["#176799","#42A4BB","#78D6C7"]', style='height: 300px;')
+        .col-md-4
+          .panel.panel-default
+            .panel-heading
+              strong
+                span.glyphicon.glyphicon-th
+                span(data-i18n='Data')
+            .panel-body(data-ng-controller='flotChartCtrl')
+              div(data-flot-chart='', data-data='donutChart2.data', data-options='donutChart2.options', style='width: 100%; height: 300px;')
+      .row
+        .col-md-8
+          .panel.panel-default
+            .panel-heading
+              strong
+                span.glyphicon.glyphicon-th
+                span(data-i18n='Realtime Data')
+            .panel-body
+              div(data-flot-chart-realtime='', data-type='realtime', style='width: 100%; height: 275px;')
+        .col-md-4
+          section.panel.panel-box
+            .panel-top.bg-info
+              .text-left SNOW
+              .divider.divider-xl
+              .divider.divider-lg
+            .panel-icon.bg-info
+              // <i class="wi-day-cloudy"></i>
+              canvas(ui-weather='', icon='SNOW', color='#fff', width='70', height='70')
+            .panel-bottom.bg-reverse
+              ul.list-justified.text-center
+                li
+                  canvas(ui-weather='', icon='RAIN', color='#23AE89', width='40', height='40')
+                  p.text-muted Wednesday
+                li
+                  canvas(ui-weather='', icon='WIND', color='#6A55C2', width='40', height='40')
+                  p.text-muted Thursday
+                li
+                  canvas(ui-weather='', icon='CLEAR_DAY', color='#FFB61C', width='40', height='40')
+                  p.text-muted Friday
+      .panel.panel-default
+        .panel-heading
+          strong
+            span.glyphicon.glyphicon-th
+            span(data-i18n='Table')
+        table.table
+          thead
+            tr
+              th &num;
+              th Project
+              th Manager
+              th Status
+              th Progress
+          tbody
+            tr
+              td 1
+              td
+                span.color-success
+                  i.fa.fa-level-up
+                | TWLT
+              td Amery Lee
+              td
+                span.label.label-info Pending
+              td
+                progressbar.progressbar-xs.no-margin(value='55')
+            tr
+              td 2
+              td
+                span.color-success
+                  i.fa.fa-level-up
+                | A16Z
+              td Romayne Carlyn
+              td
+                span.label.label-primary Due
+              td
+                progressbar.progressbar-xs.no-margin(value='34', type='success')
+            tr
+              td 3
+              td
+                span.color-warning
+                  i.fa.fa-level-down
+                | DARK
+              td Marybeth Joanna
+              td
+                span.label.label-success Due
+              td
+                progressbar.progressbar-xs.no-margin(value='68', type='info')
+            tr
+              td 4
+              td
+                span.color-info
+                  i.fa.fa-level-up
+                | Q300
+              td Jonah Benny
+              td
+                span.label.label-danger Blocked
+              td
+                progressbar.progressbar-xs.no-margin(value='52', type='warning')
+            tr
+              td 5
+              td
+                span.color-danger
+                  i.fa.fa-level-down
+                | RVNG
+              td Daly Royle
+              td
+                span.label.label-warning Suspended
+              td
+                progressbar.progressbar-xs.no-margin(value='77', type='danger')
