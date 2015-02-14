@@ -1,8 +1,2 @@
-lookmook Admin
-==============
-
-- Deploy
-
-```
-	
-```
+ripple-glance
+=============
