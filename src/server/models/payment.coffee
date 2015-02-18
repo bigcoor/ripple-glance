@@ -1,12 +1,10 @@
 mongoose = require('mongoose')
 commons = require('mongoose-commons')
 
-require('mongoose-long')(mongoose)
-
 Schema = mongoose.Schema
 SchemaTypes = Schema.Types
 
-BalanceSchema = new Schema({
+PaymentSchema = new Schema({
   userId: {type: Schema.ObjectId, ref: 'users'}
   currency: {type: String, trim: true}
   counterparty: {type: String, trim: true}
@@ -17,6 +15,6 @@ BalanceSchema = new Schema({
   toJSON: {virtuals: true}
 })
 
-BalanceSchema.plugin(commons)
+PaymentSchema.plugin(commons)
 
-module.exports = mongoose.model('balances', BlanceSchema)
+module.exports = mongoose.model('payment', PaymentSchema)

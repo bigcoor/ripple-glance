@@ -23,37 +23,16 @@ platform = require('./platform')
 txManager = require('../components/txmgr')
 
 createUserInternal = (handle, source, nick, icon, password, callback) ->
+  logger.debug(handle, source, nick, icon, password)
   timer = utils.prologue(logger, 'createUserInternal')
+
   async.waterfall([
-      async.apply(user.createUser, handle, source, nick, icon, password),
-      async.apply((uid, cb) ->
-        tx = txManager()
-        # TODO, potential issue here
-        # 由于这里需要createUser的uid，按现行的方式无法将createUser和transactionLog这两个操作合并为Transaction
-        # 在极端情况下，可能发生用户创建成功但是transactionLog没有成功写入的情况
-        activity.transactionLog('create', null, uid, appid(), 'user', {
-          nickname: nick,
-          handle: if source == 1 then handle else undefined,
-          source: source
-        }, tx())
-        tx.commit((err) ->
-          if err?
-            logger.caught(err, 'Failed to add transaction log for new user.')
-          # 数据库已创建该用户，所以仍然返回成功
-          cb(null, uid)
-        )
-      )
-    ], (err, uid) ->
-      if err?
-        logger.caught(err, 'Failed to create user.')
-      else
-        #TODO Save the action to record log or parse binlog to add an observation for the user being created in future
-        #FIXME temporary solution
-        timers.setImmediate(activity.addActivity, uid, appid(), 13, JSON.stringify({ uid: uid }), null, null, [uid], [13], false, null, null, (err) ->
-          logger.caught(err, 'Background new user event failed') if err?
-        )
-      utils.epilogue(logger, 'createUserInternal', timer, callback, err, uid)
-  )
+    async.apply(user.createUser, handle, source, nick, icon, password)
+  ], (err, uid) ->
+    if err?
+      logger.caught(err, 'Failed to create user.')
+    utils.epilogue(logger, 'createUserInternal', timer, callback, err, uid)
+)
 
 # email, required
 # phone, required
@@ -301,17 +280,4 @@ exports.findPassword = (email, callback) ->
       else
         result = format({ success: true })
       utils.epilogue(logger, 'findPassword', timer, callback, err, result)
-  )
-
-exports.dummyUsers = (callback) ->
-  timer = utils.prologue(logger, 'dummyUsers')
-  idlist = Object.keys(dummyUsers)
-
-  user.getExtendedProfiles(idlist, appid(), false, (err, userlist) ->
-    if err?
-      logger.caught(err, "Failed to load users")
-    else
-      for u in userlist
-        u.password = dummyUsers[u.uid]
-    utils.epilogue(logger, 'dummyUsers', timer, callback, err, format({people: userlist}))
   )

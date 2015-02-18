@@ -12,7 +12,7 @@ validateHandle = (handle, name, callback) ->
     return false
   return true
 
-createUser = (handle, wallet, source,  phone, nick, icon, hash, context = {}, callback) ->
+createUser = (handle, wallet, source,  phone, nick, icon, context = {}, hash, callback) ->
   User.create({email: handle, wallet: wallet, source: source, phone: phone, nick: nick}, (err, user) ->
     if err?
       logger.caught(err, 'Failed to create user handle = %s, nick = %s', handle, nick)
@@ -20,14 +20,14 @@ createUser = (handle, wallet, source,  phone, nick, icon, hash, context = {}, ca
     callback(err, user._id)
   )
 
-
+# TODO, 加密密码和验证密码可在mongodb中间件完成
 exports.createUser = (handle, wallet, source,  phone, nick, icon, password, context = {}, callback) ->
-  if handle?
-    return unless validateHandle(handle, 'handle', callback)
+  logger.debug('Arguments:', handle, wallet, source,  phone, nick, icon, password, context)
+  timer = utils.prologue(logger, 'createUser')
+
+  return unless validateHandle(handle, 'handle', callback) if handle?
   return unless validateHandle(nick, 'nick', callback)
   return unless validateHandle(icon, 'icon', callback)
-
-  timer = utils.prologue(logger, 'createUser')
 
   handle = handle.trim() if handle?
   nick = nick.trim()
@@ -40,7 +40,7 @@ exports.createUser = (handle, wallet, source,  phone, nick, icon, password, cont
       else
         cb(null, null)
     ),
-    async.apply(createUser, handle, wallet, source,  phone, nick, icon),
+    async.apply(createUser, handle, wallet, source,  phone, nick, icon, context),
   ], (err, uid) ->
     utils.epilogue(logger, 'createUser', timer, callback, err, uid)
   )
@@ -357,131 +357,4 @@ exports.getMetadata = (uid, keyspace = null, callback) ->
       if Object.keys(result).length > 0
         result.uid = command.result.rows[0].uid
     utils.epilogue(logger, 'getMetadata', timer, callback, err, result)
-  )
-
-exports.getMetadataByPrefix = (uid, prefix = null, callback) ->
-  return unless utils.validateUserId(uid, callback)
-
-  timer = utils.prologue(logger, 'getMetadataByPrefix')
-
-  if prefix?
-    if prefix = prefix.toString().trim()
-      query = "SELECT uid, `key`, value FROM `#{db}`.metadata WHERE uid=? AND `key` LIKE ?"
-      params = [uid, prefix + '%']
-
-  if not query
-    query = "SELECT uid, `key`, value FROM `#{db}`.metadata WHERE uid=?"
-    params = [uid]
-
-  pool.execute(query, params, (err, command) ->
-    if err?
-      logger.caught(err, 'Failed to get user metadata by prefix', uid, prefix)
-      err = new Error('Failed to get user metadata by prefix')
-    else
-      result = {}
-      for row in command.result.rows
-        result[utils.binaryToString(row.key)] = utils.binaryToString(row.value)
-      if Object.keys(result).length > 0
-        result.uid = command.result.rows[0].uid
-    utils.epilogue(logger, 'getMetadataByPrefix', timer, callback, err, result)
-  )
-
-exports.updateMetadata = (uid, key, value, oldValue = null, overwrite = false, callback) ->
-  return unless utils.validateUserId(uid, callback)
-
-  timer = utils.prologue(logger, 'updateMetadata')
-
-  if not key? or not key = key.toString().trim()
-    return utils.epilogue(logger, 'updateMetadata', timer, callback, new Error('Invalid key'))
-
-  if oldValue?
-    query = "UPDATE `#{db}`.metadata SET value=? WHERE uid=? AND `key`=? AND value=?"
-    params = [value, uid, key, oldValue]
-  else
-    query = "INSERT INTO `#{db}`.metadata(uid,`key`,value) VALUES(?,?,?)"
-    query += ' ON DUPLICATE KEY UPDATE value=VALUES(value)' if overwrite
-    params = [uid, key, value]
-
-  pool.execute(query, params, (err, command) ->
-    if err?
-      logger.caught(err, 'Failed to update user metadata', uid, key, value, oldValue)
-      if err.num == 1062 # MySQL error code for key duplicate
-        err = new Error('Entry already exists')
-        err.duplicate = true
-      else
-        err = new Error('Failed to update user metadata')
-    else
-      result = command.result.affected_rows
-    utils.epilogue(logger, 'updateMetadata', timer, callback, err, result)
-  )
-
-exports.updateMetadataTransaction = (uid, keys, data, callback) ->
-  return unless utils.validateUserId(uid, callback)
-
-  timer = utils.prologue(logger, 'updateMetadataTransaction')
-
-  if not Array.isArray(keys) or not Array.isArray(data) or keys.length != data.length or keys.length == 0
-    return utils.epilogue(logger, 'updateMetadataTransaction', timer, callback, new Error('Invalid parameters'))
-
-  params = []
-
-  for key, i in keys
-    spec = data[i]
-    value = spec.value
-    oldValue = spec.oldValue
-    overwrite = spec.overwrite
-    if not key? or not key = key.toString().trim() or not spec or not value? or value == oldValue
-      return utils.epilogue(logger, 'updateMetadataTransaction', timer, callback, new Error('Invalid parameters'))
-    if oldValue?
-      query = "UPDATE `#{db}`.metadata SET value=? WHERE uid=? AND `key`=? AND value=?"
-      params.push([query, [value, uid, key, oldValue], (result) ->
-        if result.affected_rows != 1
-          err = new Error('Transaction requirements not satisfied')
-          err.aborted = true
-          return err
-      ])
-    else
-      query = "INSERT INTO `#{db}`.metadata(uid,`key`,value) VALUES(?,?,?)"
-      query += ' ON DUPLICATE KEY UPDATE value=VALUES(value)' if overwrite
-      params.push([query, [uid, key, value]])
-
-  transaction = callback.transaction ? pool.transaction
-  transaction(params, (err, commands) ->
-    result = 0
-    if err?
-      logger.caught(err, 'Failed to update user metadata in transaction', uid, keys, data)
-      if err.num == 1062 or err.aborted
-        err = null
-      else
-        err = new Error('Failed to update user metadata in transaction')
-    else
-      for command in commands
-        result += command.result.affected_rows
-    utils.epilogue(logger, 'updateMetadataTransaction', timer, callback, err, result)
-  )
-
-exports.deleteMetadata = (uid, keyspace = null, callback) ->
-  return unless utils.validateUserId(uid, callback)
-
-  timer = utils.prologue(logger, 'deleteMetadata')
-
-  if keyspace?
-    keyspace = [keyspace] unless Array.isArray(keyspace)
-    keyspace = (utils.stringToBinary(key) for key in keyspace when key? and key = key.toString().trim())
-    if keyspace.length > 0
-      query = "DELETE FROM `#{db}`.metadata WHERE uid=? AND `key` IN (?#{Array(keyspace.length).join(',?')})"
-      params = [uid].concat(keyspace)
-    else
-      return utils.epilogue(logger, 'deleteMetadata', timer, callback, new Error('Invalid keyspace'))
-  else
-    query = "DELETE FROM `#{db}`.metadata WHERE uid=?"
-    params = [uid]
-
-  pool.execute(query, params, (err, command) ->
-    if err?
-      logger.caught(err, 'Failed to delete user metadata', uid, keyspace)
-      err = new Error('Failed to delete user metadata')
-    else
-      result = command.result.affected_rows
-    utils.epilogue(logger, 'deleteMetadata', timer, callback, err, result)
   )
