@@ -5,9 +5,10 @@ scrypt = require('scrypt')
 alloc = require('../utils/stack')
 config = require('../utils/config')
 logger = require('../utils/log').getLogger('CREDENTIALS')
-pool = require('../drivers/mysql-pool').create(config['PasswordDB'])
 uniqid = require('../utils/uniqid')
 utils = require('../utils/routines')
+
+User = require '../models/User'
 
 config.setModuleDefaults('PasswordDB', {
   maxTime: 0.1
@@ -28,20 +29,20 @@ config.on('change', (newConfig) ->
 )
 
 queryHash = (uid, callback) ->
-  pool.execute("SELECT hash FROM `#{db}`.password WHERE uid=?", [uid], (err, command) ->
-    if not err? and command.result.rows.length > 0
-      hash = command.result.rows[0].hash
-    callback(err, hash)
+  User.findById(uid, (err, user) ->
+    if not err? and user?
+      password = user.password
+    callback(err, password)
   )
 
 updateHash = (uid, oldHash, newHash, callback) ->
-  pool.execute("UPDATE `#{db}`.password SET hash=? WHERE uid=? AND hash=?", [newHash, uid, oldHash], (err, command) ->
-    callback(err, if err? then null else command.result.affected_rows == 1)
+  User.findOneAndUpdate({_id: uid, password: oldHash}, {password: newHash}, (err, user) ->
+    callback(err, if err? then null else user?)
   )
 
 resetHash = (uid, newHash, callback) ->
-  pool.execute("REPLACE INTO `#{db}`.password(uid, hash) VALUES(?,?)", [uid, newHash], (err, command) ->
-    callback(err, if err? then null else command.result.affected_rows)
+  User.findOneAndUpdate({_id: uid}, {password: newHash}, (err, user) ->
+    callback(err, if err? then null else user?)
   )
 
 makeError = (str, unauthorized = true) ->
@@ -65,7 +66,7 @@ generateHash = (password, callback) ->
 verifyHash = (password, hash, callback) ->
   if not hash?
     callback(makeError("No password found"))
-    return
+    return false
 
   timer = logger.time('verifyHash')
 
@@ -191,7 +192,7 @@ exports.decodeToken = (uid, token, secret = '') ->
   return null unless typeof token == 'string'
   return null unless typeof secret == 'string'
 
-  uid = utils.normalizeUserId(uid) ? 0
+  uid = utils.normalizeObjectId(uid) ? 0
   params = decodeToken(token, digestKey, secret)
 
   return null unless params?

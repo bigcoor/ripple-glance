@@ -1,6 +1,7 @@
 logger = require('./log').getLogger('ROUTINES')
 
 fs = require('fs')
+mongoose = require 'mongoose'
 
 #TODO refactor to merge these two methods
 exports.extend = extend = (object, properties, nullAsUndefined = false) ->
@@ -570,3 +571,13 @@ exports.channelFilter = (context = {}, boolFilter, versionExclude) ->
         return false
   else
     return false
+
+exports.normalizeObjectId = (id, failureCallback = null) ->
+  id = id.toString().trim().replace(/^0+/g, '')
+  return id if mongoose.Types.ObjectId.isValid(id)
+
+  if failureCallback?
+    logger.warn("validateObjectId failed [%s]", id)
+    logger.warn(new Error('validateObjectId failed').stack)
+    failureCallback?(new Error('Bad Object id'))
+  return false

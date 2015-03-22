@@ -18,22 +18,30 @@ format = require('./format')
 
 ripple = request './ripple'
 
-exports.addRpAccount = (address, context = {}, callback) ->
+Balance = request '../models/Balance'
+
+exports.addRpAccount = (self, address, context = {}, callback) ->
+  logger.debug("Arguments:", self, address, context)
+  return false unless self = utils.validateUserId(self, callback)
   timer = utils.prologue(logger, 'addRpAccount')
 
   # TODO, checkout address, context
   async.waterfall([
     # TODO, 检查address是否已经被绑定
-    async.apply((cb)->
-      return cb(null, nick) if nick?
-      checker.generateNickname(null, cb)
-    ),
-    async.apply((nick, cb)->
-      createUserInternal(email, 1, nick, format.defaultIcon(), password, cb)
-    )
-  ], (err, uid) ->
+    async.apply(ripple.getAccountBalances, context, address)
+    async.apply (balances, cb) ->
+      Balance.create(balances, (err, balance) ->
+        if err?
+          if err.code = 11000
+            logger.warn("This balance has been registered", err)
+            err.duplicate = true
+          else
+            logger.error("Failed to create balance", err)
+          cb(err, balance)
+      )
+  ], (err, balance) ->
     if err?
-      logger.caught(err, 'Register failed', email, nick)
+      logger.caught(err, 'Register failed', self, address)
       duplicate = err.duplicate
       err = new Error('Register failed')
       if duplicate
@@ -41,7 +49,7 @@ exports.addRpAccount = (address, context = {}, callback) ->
       else
         err.tryagain = true
     else
-      result = format({ uid: uid })
+      result = format({ balance: balance })
     utils.epilogue(logger, 'addRpAccount', timer, callback, err, result)
   )
 
@@ -158,6 +166,6 @@ exports.changePassword = (userid, oldPassword, newPassword, callback) ->
       err = new Error('Wrong password')
       err.unauthorized = true
     else
-      result = format({ success: true })
+      result = format({success: true})
     utils.epilogue(logger, 'changePassword', timer, callback, err, result)
   )

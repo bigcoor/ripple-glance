@@ -29,12 +29,22 @@ account =
 buildRequestOption = (address) ->
   return util.fotmat(account.getAccountBalances, rpBaseUri, address)
 
+handleRippleBalanceError = (response, callback) ->
+  balanceList = []
+  if not response?.success
+    logger.caught("Failed to get balance", response)
+    err = new Error(response.message)
+  else
+    balanceList = (balance.ledger = response.ledger for balance in response.balances)
+  callback(err, balanceList)
+
 exports.getAccountBalances = (context = {}, address, callback) ->
   logger.debug("Arguments:", context, address)
   timer = utils.prologue(logger, 'getAccountBalances')
 
   async.waterfall([
     async.apply(request.post, buildRequestOption(address))
+    async.apply(handleRippleBalanceError)
   ], (err, balances) ->
     if err?
       logger.caught("Failed to get balances", err)
