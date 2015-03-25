@@ -20,9 +20,9 @@ maxNickCharLength = config['Checker']?.maxNickCharLength
 minDescLength = config['Checker']?.minDescLength
 maxDescLength = config['Checker']?.maxDescLength
 
-defaultPageSize = config['Pagination'].defaultPageSize
-maxPageSize = config['Pagination'].maxPageSize
-maxOffset = config['Pagination'].maxOffset
+defaultPageSize = config['Pagination']?.defaultPageSize
+maxPageSize = config['Pagination']?.maxPageSize
+maxOffset = config['Pagination']?.maxOffset
 
 nickChecker = XRegExp('^[\\p{Han}\\p{Bopomofo}\\p{Hangul}\\p{Hiragana}\\p{Katakana}0-9A-Za-z_\\-āáǎàōóǒòēéěèīíǐìūúǔùü]+$')
 nickSanitizer = XRegExp('[^\\p{Han}\\p{Bopomofo}\\p{Hangul}\\p{Hiragana}\\p{Katakana}0-9A-Za-z_\\-āáǎàōóǒòēéěèīíǐìūúǔùü]+', 'g')

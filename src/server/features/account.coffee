@@ -9,7 +9,6 @@ logger = require('../utils/log').getLogger('ACCOUNT')
 timed = require('../utils/timed')
 utils = require('../utils/routines')
 
-activity = require('../cores/activity')
 credentials = require('../cores/credentials')
 user = require('../cores/user')
 
@@ -20,14 +19,12 @@ format = require('./format')
 profile = require('./profile')
 platform = require('./platform')
 
-txManager = require('../components/txmgr')
-
-createUserInternal = (handle, source, nick, icon, password, callback) ->
-  logger.debug(handle, source, nick, icon, password)
+createUserInternal = (handle, wallet, source,  phone, nick, icon, password, context = {}, callback) ->
+  logger.debug(handle, wallet, source,  phone, nick, icon, password)
   timer = utils.prologue(logger, 'createUserInternal')
 
   async.waterfall([
-    async.apply(user.createUser, handle, source, nick, icon, password)
+    async.apply(user.createUser, handle, wallet, source,  phone, nick, icon, password, context)
   ], (err, uid) ->
     if err?
       logger.caught(err, 'Failed to create user.')
@@ -37,33 +34,40 @@ createUserInternal = (handle, source, nick, icon, password, callback) ->
 # email, required
 # phone, required
 # nick, 如果没有则随机创建一个
-exports.register = (email, nick, password, context = {}, callback) ->
+exports.register = (extra, context = {}, callback) ->
   timer = utils.prologue(logger, 'register')
 
-  if not checker.validateEmail(email) or (nick? and not checker.validateNickname(nick)) or not checker.validatePassword(password)
+  handle = extra?.email
+  wallet = extra?.wallet
+  phone = extra?.phone
+  nick = extra?.nick
+  icon = extra?.icon
+  password = extra?.password
+
+  if not checker.validateEmail(handle) or (nick? and not checker.validateNickname(nick)) or not checker.validatePassword(password)
     return utils.epilogue(logger, 'register', timer, callback, new Error('Bad arguments'))
 
   async.waterfall([
-      async.apply((cb)->
-        return cb(null, nick) if nick?
-        # TODO，有必要可以用特殊状态来标记随机生成nick的用户
-        checker.generateNickname(null, cb)
-      ),
-      async.apply((nick, cb)->
-        createUserInternal(email, 1, nick, format.defaultIcon(), password, cb)
-      )
-    ], (err, uid) ->
-      if err?
-        logger.caught(err, 'Register failed', email, nick)
-        duplicate = err.duplicate
-        err = new Error('Register failed')
-        if duplicate
-          err.duplicate = true
-        else
-          err.tryagain = true
+    async.apply((cb) ->
+      return cb(null, nick) if nick?
+      # TODO，有必要可以用特殊状态来标记随机生成nick的用户
+      checker.generateNickname(null, cb)
+    ),
+    async.apply((nick, cb) ->
+      createUserInternal(handle, wallet, 1, phone, nick, format.defaultIcon(), password, context, cb)
+    )
+  ], (err, uid) ->
+    if err?
+      logger.caught(err, 'Register failed', handle, nick)
+      duplicate = err.duplicate
+      err = new Error('Register failed')
+      if duplicate
+        err.duplicate = true
       else
-        result = format({ uid: uid })
-      utils.epilogue(logger, 'register', timer, callback, err, result)
+        err.tryagain = true
+    else
+      result = format({ uid: uid })
+    utils.epilogue(logger, 'register', timer, callback, err, result)
   )
 
 getHandle = exports.getHandle = (openid, source) ->
@@ -92,7 +96,7 @@ exports.createOAuth = (openid, source, nick, iconUrl, tokens, callback) ->
     async.apply((uid, cb)->
       # 尝试从iconUrl下载图片并上传到七牛服务器，然后设置为该用户的头像
       # 这一步的错误不影响整个api的结果。
-      upload.uploadUrlToQiniu(uid, 'icon', iconUrl, (err, avatarKey)->
+      upload.uploadUrlToQiniu(uid, 'icon', iconUrl, (err, avatarKey) ->
         if not err? and avatarKey?
           # 这里没有修改nick，不需要更新transactionLog
           user.updateProfile(uid, null, avatarKey, (err, result)->

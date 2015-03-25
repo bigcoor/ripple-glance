@@ -5,7 +5,6 @@ scrypt = require('scrypt')
 alloc = require('../utils/stack')
 config = require('../utils/config')
 logger = require('../utils/log').getLogger('CREDENTIALS')
-uniqid = require('../utils/uniqid')
 utils = require('../utils/routines')
 
 User = require '../models/User'
@@ -86,7 +85,7 @@ exports.generatePasswordHash = (password, callback) ->
   generateHash(password, callback)
 
 exports.verifyPassword = (uid, password, callback) ->
-  return unless utils.validateUserId(uid, callback)
+  return unless utils.normalizeObjectId(uid, callback)
   return unless validatePassword(password, callback)
 
   timer = utils.prologue(logger, 'verifyPassword')

@@ -3,7 +3,7 @@ https = require 'https'
 http = require 'http'
 fs = require 'fs'
 
-app = require '../build/server/app'
+app = require '../build/server/intranet'
 config = require '../build/server/utils/config'
 
-http.createServer(app).listen(config.get('PORT'))
+http.createServer(app).listen(3000)

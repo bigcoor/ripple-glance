@@ -16,9 +16,10 @@ checker = require('./checker')
 constant = require('./constant')
 format = require('./format')
 
-ripple = request './ripple'
+ripple = require './ripple'
+upload = require './upload'
 
-Balance = request '../models/Balance'
+Balance = require '../models/Balance'
 
 exports.addRpAccount = (self, address, context = {}, callback) ->
   logger.debug("Arguments:", self, address, context)
@@ -100,7 +101,7 @@ exports.createOAuth = (openid, source, nick, iconUrl, tokens, callback) ->
       err = new Error('Failed to create oauth account')
       err.tryagain = true
     else
-      platform.updateWeiboInfo(openid, uid, tokens, false, -> "we don't care about the result") if source == 3
+      #platform.updateWeiboInfo(openid, uid, tokens, false, -> "we don't care about the result") if source == 3
       result.uid = uid
     utils.epilogue(logger, 'createOAuth', timer, callback, err, format(result))
   )
@@ -143,8 +144,7 @@ exports.updateOAuthToken = (openid, source, userid, tokens, callback) ->
   openid = openid.trim()
   source = utils.parseInt(source, 0, 0)
 
-  recorder.record(openid, source, userid, tokens)
-  platform.updateWeiboInfo(openid, userid, tokens, false, -> "we don't care about the result") if source == 3
+  #platform.updateWeiboInfo(openid, userid, tokens, false, -> "we don't care about the result") if source == 3
 
   callback(null, format({ success: true }))
 

@@ -12,8 +12,8 @@ validateHandle = (handle, name, callback) ->
     return false
   return true
 
-createUser = (handle, wallet, source,  phone, nick, icon, context = {}, hash, callback) ->
-  User.create({email: handle, wallet: wallet, source: source, phone: phone, nick: nick}, (err, user) ->
+createUser = (handle, wallet, source, phone, nick, icon, context = {}, hash, callback) ->
+  User.create({email: handle, wallet: wallet, phone: phone, nick: nick, password: hash}, (err, user) ->
     if err?
       logger.caught(err, 'Failed to create user handle = %s, nick = %s', handle, nick)
       err = new Error('Failed to create user handle')
@@ -256,43 +256,41 @@ exports.getProfileByHandle = getProfileByHandle = (handle, callback) ->
 
   handle = handle.trim()
 
-  pool.execute("SELECT profile.* FROM `#{db}`.profile, `#{db}`.handle WHERE profile.uid=handle.uid AND profile.status&0x80=0 AND handle.handle=?", [utils.stringToBinary(handle)], (err, command) ->
+  User.findOne({email: handle, status: 0}, (err, user) ->
     if err?
-      logger.caught(err, 'Failed to query user profile, handle =', handle)
-      err.tryagain = true
-    else if command.result.rows.length == 0
-      err = new Error('User not found')
-      err.notfound = true
-    else
-      row = command.result.rows[0]
-      profile = {
-        uid: row.uid,
-        nick: utils.binaryToString(row.nick),
-        icon: row.icon
-      }
-    utils.epilogue(logger, 'getProfileByHandle', timer, callback, err, profile)
-  )
-
-exports.getProfileByNick = (nick, callback) ->
-  return unless validateHandle(nick, 'nick', callback)
-
-  timer = utils.prologue(logger, 'getProfileByNick')
-
-  nick = nick.trim()
-
-  pool.execute("SELECT * FROM `#{db}`.profile WHERE nick=? AND status&0x80=0", [utils.stringToBinary(nick)], (err, command) ->
-    if err?
-      logger.caught(err, 'Failed to query user profile, nick =', nick)
+      logger.caught(err, 'Failed to query user profile, phone =', phone)
       err = new Error('Failed to query user profile')
-    else if command.result.rows.length == 0
+    else if not user?
       err = new Error('No such user')
       err.notfound = true
     else
-      row = command.result.rows[0]
       profile = {
-        uid: row.uid,
-        nick: utils.binaryToString(row.nick),
-        icon: row.icon
+        uid: user._id.toString()
+        email: user.email
+        icon: user.icon
+      }
+    utils.epilogue(logger, 'getProfileByNick', timer, callback, err, profile)
+  )
+
+exports.getProfileByPhone = (phone, callback) ->
+  return unless validateHandle(phone, 'phone', callback)
+
+  timer = utils.prologue(logger, 'getProfileByNick')
+
+  phone = phone.trim()
+
+  User.findOne({phone: phone, status: 0}, (err, user) ->
+    if err?
+      logger.caught(err, 'Failed to query user profile, phone =', phone)
+      err = new Error('Failed to query user profile')
+    else if not user?
+      err = new Error('No such user')
+      err.notfound = true
+    else
+      profile = {
+        uid: user._id.toString()
+        phone: user.phone
+        icon: user.icon
       }
     utils.epilogue(logger, 'getProfileByNick', timer, callback, err, profile)
   )

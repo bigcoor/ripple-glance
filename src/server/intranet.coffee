@@ -1,4 +1,5 @@
 express = require('express')
+mongoose = require('mongoose')
 path = require('path')
 bodyParser = require('body-parser')
 morgan = require('morgan')
@@ -9,6 +10,16 @@ stylus = require('stylus')
 serveStatic = require('serve-static')
 app = express()
 router = express.Router()
+config = require './utils/config'
+
+config.setModuleDefaults('Web', {
+  sizeLimit: '8kb'
+})
+
+sizeLimit = config['Web']?.sizeLimit
+config.on('change', (newConfig) ->
+  sizeLimit = config['Web']?.sizeLimit
+)
 
 app.set('views', __dirname + '/views')
 app.set('view engine', 'jade')
@@ -22,6 +33,13 @@ app.use cookieSession({secret: "qwertyuopkjsdfm", cookie: {maxAge: 1000 * 60 * 6
 app.use serveStatic(path.join(__dirname + '/../web'))
 app.use router
 
-require('./routes')(app)
+require('./api-authless')(app)
+require('./api-private')(app)
+
+mongoConn = config['MongoDB'].mongo
+mongoOpt = config['MongoDB'].options
+
+if mongoConn?
+  mongoose.connect(mongoConn, mongoOpt ? {})
 
 module.exports = app

@@ -1,8 +1,6 @@
 mongoose = require('mongoose')
 commons = require('mongoose-commons')
 
-require('mongoose-long')(mongoose)
-
 Schema = mongoose.Schema
 SchemaTypes = Schema.Types
 

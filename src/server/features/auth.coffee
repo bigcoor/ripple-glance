@@ -14,6 +14,8 @@ swap = (a, b, callback) ->
   callback(null, b, a)
 
 signIn = (name, fn, idleTimeout, persistSpan, handle, password, callback) ->
+  logger.debug(name, fn, idleTimeout, persistSpan, handle, password)
+
   if not checker.validatePassword(password, false)
     return callback (new Error('Invalid password'))
 
@@ -27,6 +29,7 @@ signIn = (name, fn, idleTimeout, persistSpan, handle, password, callback) ->
     async.apply(swap, password)
     async.apply(credentials.verifyPassword)
   ], (err, success) ->
+    console.log(err, success)
     if not err?
       success = format({
         uid: uid,
@@ -64,8 +67,8 @@ exports.acquireSession = (uid, token, idleTimeout, persistSpan, callback) ->
 exports.emailSignIn = (email, password, idleTimeout, persistSpan, callback) ->
   signIn('emailSignIn', user.getProfileByHandle, idleTimeout, persistSpan, email, password, callback)
 
-exports.nickSignIn = (nick, password, idleTimeout, persistSpan, callback) ->
-  signIn('nickSignIn', user.getProfileByNick, idleTimeout, persistSpan, nick, password, callback)
+exports.phoneSignIn = (nick, password, idleTimeout, persistSpan, callback) ->
+  signIn('phoneSignIn', user.getProfileByPhone, idleTimeout, persistSpan, nick, password, callback)
 
 exports.generateCaptchaToken = (captcha, idleTimeout, callback) ->
   token = credentials.generateToken(0, 0, idleTimeout, '', captcha)

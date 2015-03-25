@@ -1,6 +1,0 @@
-{
-  "API": "http://test.cunpai.com:16388",
-  "MONGO": "mongodb://localhost:27017/ripple_glance",
-  "PORT": 3000,
-  "VERBOSE": true
-}
