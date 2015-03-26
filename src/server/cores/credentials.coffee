@@ -1,6 +1,7 @@
 async = require('async')
 crypto = require('crypto')
 scrypt = require('scrypt')
+uuid = require('node-uuid')
 
 alloc = require('../utils/stack')
 config = require('../utils/config')
@@ -182,7 +183,7 @@ exports.generateToken = (uid, absoluteTimeoutInMinutes, idleTimeoutInSeconds, da
   if absoluteTimeoutInMinutes + idleTimeoutInSeconds == 0
     return null
 
-  params = [uid, uniqid.generate(), absoluteTimeoutInMinutes, now(), idleTimeoutInSeconds]
+  params = [uid, uuid.v1(), absoluteTimeoutInMinutes, now(), idleTimeoutInSeconds]
   params.push(data) if data.length > 0
 
   return generateToken(digestKey, secret, params)

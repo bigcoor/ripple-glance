@@ -29,7 +29,6 @@ signIn = (name, fn, idleTimeout, persistSpan, handle, password, callback) ->
     async.apply(swap, password)
     async.apply(credentials.verifyPassword)
   ], (err, success) ->
-    console.log(err, success)
     if not err?
       success = format({
         uid: uid,

@@ -53,7 +53,10 @@ shuttingdown = false
 # logging to default stream should use logDefault()
 logDefault = (level, desc) ->
   if currentLevelValue >= levels[level]
-    defaultStream.write(formatInternal(level, desc))
+    if level.toLowerCase() == 'error' or level.toLowerCase() == 'debug'
+      process.stderr.write(formatInternal(level, desc) + '\n')
+    else
+      process.stdout.write(formatInternal(level, desc) + '\n')
 
 ensureDir = (dir) ->
   try
@@ -77,8 +80,8 @@ close = (permanet = false) ->
   return unless logStream?
   logDefault('INFO', "Closing log file: `#{lastLogPath}`")
   try
-    # must call end or destroySoon instead of close
-    # because close doesn't flush the buffer
+  # must call end or destroySoon instead of close
+  # because close doesn't flush the buffer
     logStream.destroySoon()
   catch err
     logDefault('ERROR', "Failed to flush and close the underlying stream\n#{formatError(err)}")
@@ -136,16 +139,19 @@ ensureOpened = ->
   if not logStream? or rotate(newPath)
     open(newPath)
 
-write = (str) ->
-  ensureOpened()
+write = (level, desc, attributes) ->
   # logStream is not null even if an error event is queued, for example, when open failed
   # but this is toally fine
-  (logStream ? defaultStream).write(str)
+  if logStream?
+    ensureOpened()
+    logStream.write(format(level, attributes, desc))
+  else
+    logDefault(level, desc)
 
 # logging in this module per se should use logInternal()
 logInternal = (level, desc) ->
   if currentLevelValue >= levels[level]
-    write(formatInternal(level, desc))
+    write(level, desc)
     return true
   return false
 
@@ -201,7 +207,7 @@ dropCurrent = (requestedLevelValue = 0, category) ->
     configLoaded = true
     startTime = timeInternal('Loading logging level from config module')
     try
-      # put it here to give people a chance to call setDefaultLoggingLevel
+    # put it here to give people a chance to call setDefaultLoggingLevel
       config = require('./config')
       config.setModuleDefaults('Logging', {
         currentLevel: getLevelFromValue(currentLevelValue)
@@ -227,7 +233,7 @@ log = (level, category, desc) ->
   else
     attributes = '[' + category.toString() + ']'
 
-  write(format(level, attributes, desc))
+  write(level, desc, attributes)
 
 buildMethod = (level, levelValue, bind) ->
   return ->

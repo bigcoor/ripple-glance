@@ -49,6 +49,7 @@
     "email-templates": "^1.2.1",
     "scrypt": "^4.0.7",
     "mongoose-commons": "^0.1.3",
-    "xregexp": "^2.0.0"
+    "xregexp": "^2.0.0",
+    "node-uuid": "^1.4.3"
   }
 }
