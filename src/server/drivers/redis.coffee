@@ -52,3 +52,5 @@ exports.create = create = (host = 'localhost', db = 0, port = 6379, name = utils
   return client
 
 exports.redisClient = create(hostname, db, port, null, {})
+exports.redisPubClient = create(hostname, db, port, null, {})
+exports.redisSubClient = create(hostname, db, port, null, {})

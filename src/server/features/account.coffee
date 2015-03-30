@@ -12,12 +12,16 @@ utils = require('../utils/routines')
 credentials = require('../cores/credentials')
 user = require('../cores/user')
 
+redis = require '../drivers/redis'
+
 auth = require('./auth')
 checker = require('./checker')
 constant = require('./constant')
 format = require('./format')
 profile = require('./profile')
 platform = require('./platform')
+
+redisPubClient = redis.redisPubClient
 
 createUserInternal = (handle, wallet, source,  phone, nick, icon, password, context = {}, callback) ->
   logger.debug(handle, wallet, source,  phone, nick, icon, password)
@@ -66,7 +70,9 @@ exports.register = (extra, context = {}, callback) ->
       else
         err.tryagain = true
     else
-      result = format({ uid: uid })
+      # 发布消息到redis, 抓取用户ripple记录
+      redisPubClient.publish('getPaymentHistory', [{}, extra.wallet]) if extra.wallet?
+    result = format({ uid: uid })
     utils.epilogue(logger, 'register', timer, callback, err, result)
   )
 

@@ -147,7 +147,7 @@ exports.MiPush = {
 }
 
 exports.Redis = {
-  hostname: '10.160.51.223'
+  hostname: 'localhost'
   port: 6379
   db: 0
 }

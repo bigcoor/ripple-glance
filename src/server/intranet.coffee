@@ -36,6 +36,9 @@ app.use router
 require('./api-authless')(app)
 require('./api-private')(app)
 
+# redis
+require './cores/scheduler'
+
 mongoConn = config['MongoDB'].mongo
 mongoOpt = config['MongoDB'].options
 

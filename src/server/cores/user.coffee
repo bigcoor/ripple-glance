@@ -15,9 +15,14 @@ validateHandle = (handle, name, callback) ->
 createUser = (handle, wallet, source, phone, nick, icon, context = {}, hash, callback) ->
   User.create({email: handle, wallet: wallet, phone: phone, nick: nick, password: hash}, (err, user) ->
     if err?
-      logger.caught(err, 'Failed to create user handle = %s, nick = %s', handle, nick)
-      err = new Error('Failed to create user handle')
-    callback(err, user._id)
+      if err.code == 11000
+        err.duplicate = true
+        logger.caught(err, 'User has registered, handle = %s, nick = %s', handle, nick)
+        err = new Error('User has registered')
+      else
+        logger.caught(err, 'Failed to create user handle = %s, nick = %s', handle, nick)
+        err = new Error('Failed to create user handle')
+    callback(err, user?._id)
   )
 
 # TODO, 加密密码和验证密码可在mongodb中间件完成
