@@ -14,6 +14,8 @@ utils = require('../utils/routines')
 credentials = require('../cores/credentials')
 user = require('../cores/user')
 
+Payment = require '../models/Payment'
+
 auth = require('./auth')
 checker = require('./checker')
 constant = require('./constant')
@@ -39,6 +41,22 @@ handleRippleBalanceError = (response, callback) ->
   else
     balanceList = (balance.ledger = response.ledger for balance in response.balances)
   callback(err, balanceList)
+
+buildPayments = (payments) ->
+  results = []
+  for payment in payments
+    results.sourceAccount = payment.source_account
+    results.values = payment.source_amount.value
+    results.issuer = payment.source_amount.issuer
+    results.currency = payment.source_amount.currency
+    results.destinationAccount = payment.destination_account
+    results.direction = payment.direction
+    results.timestamp = payment.timestamp
+    results.fee = payment.fee
+    results.hash =  payment.hash
+    results.ledger = payment.ledger
+
+    return results
 
 exports.getAccountBalances = (context = {}, address, callback) ->
   logger.debug("Arguments:", context, address)
@@ -70,9 +88,17 @@ exports.getPaymentHistory = (context = {}, address, callback) ->
         jQuery: false,
         callback: (err, result) ->
           continueCrawler = false if result?.length < resultsPerPage
-
+          Payment.create(buildPayments(result), (err, payment) ->
+            if err.code = 11000
+              err.duplicate = true
+              logger.error("Payment has existed.")
+              error = new Error("Payment has existed.")
+            cb(err)
+          )
       }])
     async.apply (err) ->
+      if err?
+        if not err.duplicate
+          err.tryagain = true
+          logger.error("Failed to crawler data from ripple network.")
   )
-
-  console.log("@@@@@@@@@@@@@@@@@@@@@@", context = {}, address, callback)

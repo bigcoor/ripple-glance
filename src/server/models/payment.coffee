@@ -9,8 +9,8 @@ PaymentSchema = new Schema({
   currency: {type: String, trim: true}
   value: {type: SchemaTypes.Long}
   issuer: {type: String, trim: true}
-  source_account: {type: String, trim: true}
-  destination_account: {type: String, trim: true}
+  sourceAccount: {type: String, trim: true}
+  destinationAccount: {type: String, trim: true}
   direction: {type: String, trim: true}
   timestamp: {type: Date}
   fee: {type: Number}
