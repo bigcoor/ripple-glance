@@ -24,14 +24,14 @@ profile = require('./profile')
 platform = require('./platform')
 
 rpVersion = 'v1'
-rpBaseUri = 'https://api.ripple.com/'
+rpBaseUri = 'https://api.ripple.com'
 resultsPerPage = 1000
 account =
   getAccountBalances: "%s/#{rpVersion}/accounts/%s/balances"
   getPaymentHistory: "%s/#{rpVersion}/accounts/%s/payments?results_per_page=#{resultsPerPage}&page=%s"
 
 buildRequestOption = (address) ->
-  return util.fotmat(account.getAccountBalances, rpBaseUri, address)
+  return util.format(account.getAccountBalances, rpBaseUri, address)
 
 handleRippleBalanceError = (response, callback) ->
   balanceList = []
@@ -42,21 +42,26 @@ handleRippleBalanceError = (response, callback) ->
     balanceList = (balance.ledger = response.ledger for balance in response.balances)
   callback(err, balanceList)
 
-buildPayments = (payments) ->
+buildPayments = (paymentDocs) ->
   results = []
-  for payment in payments
-    results.sourceAccount = payment.source_account
-    results.values = payment.source_amount.value
-    results.issuer = payment.source_amount.issuer
-    results.currency = payment.source_amount.currency
-    results.destinationAccount = payment.destination_account
-    results.direction = payment.direction
-    results.timestamp = payment.timestamp
-    results.fee = payment.fee
-    results.hash =  payment.hash
-    results.ledger = payment.ledger
+  paymentDocs = [] if not Array.isArray(paymentDocs)
 
-    return results
+  for paymentDoc in paymentDocs
+    paymentTmp = {}
+    paymentTmp.sourceAccount = paymentDoc.payment.source_account
+    paymentTmp.value = paymentDoc.payment.source_amount.value
+    paymentTmp.issuer = paymentDoc.payment.source_amount.issuer
+    paymentTmp.currency = paymentDoc.payment.source_amount.currency
+    paymentTmp.destinationAccount = paymentDoc.payment.destination_account
+    paymentTmp.direction = paymentDoc.payment.direction
+    paymentTmp.timestamp = paymentDoc.payment.timestamp
+    paymentTmp.fee = paymentDoc.payment.fee
+    paymentTmp.hash =  paymentDoc.hash
+    paymentTmp.ledger = paymentDoc.ledger
+
+    results.push paymentTmp
+
+  return results
 
 exports.getAccountBalances = (context = {}, address, callback) ->
   logger.debug("Arguments:", context, address)
@@ -76,7 +81,7 @@ exports.getPaymentHistory = (context = {}, address, callback) ->
   logger.debug("Arguments:", context, address)
   timer = utils.prologue(logger, 'getPaymentHistory')
 
-  c = new Crawler({maxConnections : 10})
+  c = new crawler({maxConnections: 10})
   continueCrawler = true
   page = 1
 
@@ -84,15 +89,19 @@ exports.getPaymentHistory = (context = {}, address, callback) ->
     async.apply -> return continueCrawler
     async.apply (cb) ->
       c.queue([{
-        uri: util.fotmat(account.getPaymentHistory, rpBaseUri, address, page)
+        uri: util.format(account.getPaymentHistory, rpBaseUri, address, page)
         jQuery: false,
         callback: (err, result) ->
-          continueCrawler = false if result?.length < resultsPerPage
-          Payment.create(buildPayments(result), (err, payment) ->
-            if err.code = 11000
+          if result?.body.length < resultsPerPage
+            continueCrawler = false
+          else
+            page++
+          paymentsJson = JSON.parse(result?.body)
+          Payment.create(buildPayments(paymentsJson.payments), (err, payment) ->
+            if err?.code == 11000
               err.duplicate = true
               logger.error("Payment has existed.")
-              error = new Error("Payment has existed.")
+              err = new Error("Payment has existed.")
             cb(err)
           )
       }])

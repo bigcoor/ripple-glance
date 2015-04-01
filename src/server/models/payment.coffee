@@ -7,7 +7,7 @@ SchemaTypes = Schema.Types
 PaymentSchema = new Schema({
   userId: {type: Schema.ObjectId, ref: 'users'}
   currency: {type: String, trim: true}
-  value: {type: SchemaTypes.Long}
+  value: {type: Number}
   issuer: {type: String, trim: true}
   sourceAccount: {type: String, trim: true}
   destinationAccount: {type: String, trim: true}
