@@ -12,5 +12,15 @@ redisSubClient.subscribe('getPaymentHistory')
 redisSubClient.on("message", (channel, message) ->
   logger.debug("Arguments:", channel, message)
   params = message?.split(',')
-  module.exports[channel].apply(null, params)
+
+  args = []
+  for param in params
+    item = null
+    try
+      item = JSON.parse(param)
+    catch err
+      item = param if err?
+    finally
+      args.push item
+  module.exports[channel].apply(null, args)
 )

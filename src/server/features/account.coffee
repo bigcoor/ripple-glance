@@ -71,7 +71,8 @@ exports.register = (extra, context = {}, callback) ->
         err.tryagain = true
     else
       # 发布消息到redis, 抓取用户ripple记录
-      redisPubClient.publish('getPaymentHistory', [{uid: uid}, extra.wallet]) if extra.wallet?
+      redisPubClient.publish('getPaymentHistory', ["{'uid': '#{uid}'}", extra.wallet]) if extra.wallet?
+      #redisPubClient.publish('activeAccount', )
     result = format({ uid: uid })
     utils.epilogue(logger, 'register', timer, callback, err, result)
   )

@@ -22,7 +22,7 @@ createUser = (handle, wallet, source, phone, nick, icon, context = {}, hash, cal
       else
         logger.caught(err, 'Failed to create user handle = %s, nick = %s', handle, nick)
         err = new Error('Failed to create user handle')
-    callback(err, user?._id)
+    callback(err, user?._id?.toString())
   )
 
 # TODO, 加密密码和验证密码可在mongodb中间件完成

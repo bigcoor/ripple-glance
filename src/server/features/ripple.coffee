@@ -42,12 +42,13 @@ handleRippleBalanceError = (response, callback) ->
     balanceList = (balance.ledger = response.ledger for balance in response.balances)
   callback(err, balanceList)
 
-buildPayments = (paymentDocs) ->
+buildPayments = (paymentDocs, context = {}) ->
   results = []
   paymentDocs = [] if not Array.isArray(paymentDocs)
 
   for paymentDoc in paymentDocs
     paymentTmp = {}
+    paymentTmp.userId = context.uid if context.uid?
     paymentTmp.sourceAccount = paymentDoc.payment.source_account
     paymentTmp.value = paymentDoc.payment.source_amount.value
     paymentTmp.issuer = paymentDoc.payment.source_amount.issuer
@@ -97,7 +98,7 @@ exports.getPaymentHistory = (context = {}, address, callback) ->
           else
             page++
           paymentsJson = JSON.parse(result?.body)
-          Payment.create(buildPayments(paymentsJson.payments), (err, payment) ->
+          Payment.create(buildPayments(paymentsJson.payments, context), (err, payment) ->
             if err?.code == 11000
               err.duplicate = true
               logger.error("Payment has existed.")
@@ -110,4 +111,5 @@ exports.getPaymentHistory = (context = {}, address, callback) ->
         if not err.duplicate
           err.tryagain = true
           logger.error("Failed to crawler data from ripple network.")
+      #utils.epilogue(logger, 'getAccountBalances', timer, callback, err, null)
   )

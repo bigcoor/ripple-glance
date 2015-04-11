@@ -9,7 +9,6 @@ port = config['Redis'].port
 db = config['Redis'].db
 password = config['Redis'].password
 
-
 selectDB = (client, db) ->
   client.select(db, (err) ->
     throw new Error('Failed to select db', db)
